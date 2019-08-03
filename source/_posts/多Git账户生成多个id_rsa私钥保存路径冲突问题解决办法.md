@@ -1,7 +1,9 @@
 ---
 title: 多Git账户生成多个id_rsa私钥保存路径冲突问题解决办法
 date: 2017-11-31 23:54:51
-tags: git github 
+tags: 
+  - git 
+  - github 
 categories: 版本控制
 ---
 
