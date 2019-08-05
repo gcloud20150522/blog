@@ -3,7 +3,7 @@ title: js深拷贝和浅拷贝
 date: 2016-05-1 23:54:51
 tags: 
   - js 
-categories: 前端
+categories: javascript
 ---
 
 
