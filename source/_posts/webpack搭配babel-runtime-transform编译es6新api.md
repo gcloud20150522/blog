@@ -53,5 +53,24 @@ module.exports = {
   }
 };
 ```
-#### 4.打包
+#### 4.app.js
+```js   
+// import 'babel-polyfill'
+
+let func=()=>{}
+const NUM=45
+let arr=[1,2,4]
+let a=arr.includes(8)
+console.log(a);
+
+let arrB=arr.map(item=>item*2)
+
+console.log('new Set(arrB)',new Set(arrB));
+
+
+function *fun(){
+
+}
+```
+#### 5.打包
     npx webpack
