@@ -34,7 +34,7 @@ console.info('入口文件也是一个模块')
 
 然后，我们就直接打包： webpack --config webpack.config.js
     
-![pic1](./images/7155532-15ee04aa5b6e6ad4.webp)
+![pic1](/images/7155532-15ee04aa5b6e6ad4.webp)
 
 可以看出，打包是只是引入一个模块
 我们看一下打包之后生成bundle.js的内容：
@@ -118,7 +118,7 @@ console.info('入口文件也是一个模块')
 我们只是引入一个main.js模块，但是实际生成的bundle.js确实非常多。
 前面的一大堆就是mainfest，准确来说是，runtime代码。官网的描述是这样的：
 
-![pic2](./images/7155532-22227abebcbe552a.webp)
+![pic2](/images/7155532-22227abebcbe552a.webp)
 
 >其实这里，webpack帮我们定义了一个webpack_require的加载模块的方法，而mainfest模块数据集合就是对应着bundle.js第三行的 installedModules 。每当我们在main.js入口文件引入一模块，installModules就会发生变化，当我们页面点击跳转，加载对应模块就是通过__webpack_require__方法在installModules中找对应模块信息，进行加载。
 
@@ -207,6 +207,6 @@ const path = require('path');
 
 执行 webpack --config webpack.congfig.js, 生成三个对应文件。这样来说，ventor一样的，然后浏览如果是第二次请求，会走缓存路线，不必再次加载。而bundle[chunkhash].js也就是我们的业务代码，可以避免缓存的影响
 
-![pic3](./images/7155532-c0fbf87fba32551c.webp)
+![pic3](/images/7155532-c0fbf87fba32551c.webp)
 
 实际上，mainfest也会发生变化，它的变化在于你是否增加了模块，比如新引入一个js文件之类，mainfest也会变化。明白了mainfest，我们就可以更好的处理我们的缓存机制了.
