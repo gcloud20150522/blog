@@ -1,0 +1,57 @@
+---
+title: webpack搭配babel-runtime-transform编译es6新api
+date: 2018-8-11 12:54:51
+tags: 
+  - 打包
+  - 构建
+  - babel
+categories: webpack
+---
+
+>babel-runtime-transform 为局部垫片,为开发框架而准备
+####  1.安装依赖
+
+    npm install @babel/preset-env @babel/core babel-loader --save-dev
+    npm install @babel/plugin-transform-runtime  --save-dev
+    npm install @babel/runtime --save
+
+
+####  2.项目根目录新建.babelrc
+```json
+{
+  "presets": [
+    ["@babel/preset-env", {
+      "targets": {
+        "browsers": [">1%", "last 2 versions"]
+      }
+    }]
+  ],
+  "plugins": ["@babel/transform-runtime"]
+}
+```
+
+
+####  3.配置
+```js
+module.exports = {
+  entry: {
+    app: './app.js'
+  },
+  output: {
+    filename: '[name].bundle.js'
+  },
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        use: {
+          loader: 'babel-loader',
+        },
+        exclude: '/node_moules/'
+      }
+    ]
+  }
+};
+```
+#### 4.打包
+    npx webpack
