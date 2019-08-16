@@ -19,16 +19,22 @@ categories: webpack
 ####  2.项目根目录新建.babelrc
 ```json
 {
-  "presets": [
-    ["@babel/preset-env", {
-      "targets": {
-        "browsers": [">1%", "last 2 versions"]
+  "plugins": [
+    [
+      "@babel/plugin-transform-runtime",
+      {
+        "absoluteRuntime": false,
+        "corejs": 2,
+        "helpers": true,
+        "regenerator": true,
+        "useESModules": false
       }
-    }]
-  ],
-  "plugins": ["@babel/transform-runtime"]
+    ]
+  ]
 }
 ```
+##### 配置项corejs为2,需要安装依赖
+    npm install --save @babel/runtime-corejs2
 
 
 ####  3.配置
