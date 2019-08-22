@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.3.0',
+    sidebar: {"position":"left","display":"hide","offset":12,"onmobile":true},
+    back2top: {"enable":true,"sidebar":true,"scrollpercent":true},
+    copycode: {"enable":true,"show_result":true,"style":"mac"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: ''
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="通常我们的项目包含三种类型的代码：业务代码、第三方依赖库、webpack打包构建后的manifest。官网经常会看到mainfest这个词，但是它究竟指什么，我们来做个实验找答案吧：（ps：文章把manifest打成mainfest了）  1 mkdir  webpack_mainfest   //在当前目录下，创建项目目录 webpack_mainfest 2 npm init 3 npm i">
+<meta name="keywords" content="打包,构建">
+<meta property="og:type" content="article">
+<meta property="og:title" content="webpack 、manifest 、runtime 、缓存与CommonsChunkPlugin">
+<meta property="og:url" content="http://yoursite.com/2018/08/11/webpack 、manifest 、runtime 、缓存与CommonsChunkPlugin/index.html">
+<meta property="og:site_name" content="Gcloud">
+<meta property="og:description" content="通常我们的项目包含三种类型的代码：业务代码、第三方依赖库、webpack打包构建后的manifest。官网经常会看到mainfest这个词，但是它究竟指什么，我们来做个实验找答案吧：（ps：文章把manifest打成mainfest了）  1 mkdir  webpack_mainfest   //在当前目录下，创建项目目录 webpack_mainfest 2 npm init 3 npm i">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://yoursite.com/images/7155532-15ee04aa5b6e6ad4.webp">
+<meta property="og:image" content="http://yoursite.com/images/7155532-22227abebcbe552a.webp">
+<meta property="og:image" content="http://yoursite.com/images/7155532-c0fbf87fba32551c.webp">
+<meta property="og:updated_time" content="2019-08-19T16:58:53.223Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="webpack 、manifest 、runtime 、缓存与CommonsChunkPlugin">
+<meta name="twitter:description" content="通常我们的项目包含三种类型的代码：业务代码、第三方依赖库、webpack打包构建后的manifest。官网经常会看到mainfest这个词，但是它究竟指什么，我们来做个实验找答案吧：（ps：文章把manifest打成mainfest了）  1 mkdir  webpack_mainfest   //在当前目录下，创建项目目录 webpack_mainfest 2 npm init 3 npm i">
+<meta name="twitter:image" content="http://yoursite.com/images/7155532-15ee04aa5b6e6ad4.webp">
+  <link rel="canonical" href="http://yoursite.com/2018/08/11/webpack 、manifest 、runtime 、缓存与CommonsChunkPlugin/">
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>webpack 、manifest 、runtime 、缓存与CommonsChunkPlugin | Gcloud</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Gcloud</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+    <ul id="menu" class="menu">
+        
+        
+        
+          
+          <li class="menu-item menu-item-首页">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-关于">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-标签">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-分类">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-归档">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+    </ul>
+    
+
+</nav>
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+    <div class="reading-progress-bar"></div>
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/08/11/webpack 、manifest 、runtime 、缓存与CommonsChunkPlugin/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="gcl chang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Gcloud">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">webpack 、manifest 、runtime 、缓存与CommonsChunkPlugin
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-08-11 12:54:51" itemprop="dateCreated datePublished" datetime="2018-08-11T12:54:51+00:00">2018-08-11</time>
+            </span>
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/webpack/" itemprop="url" rel="index"><span itemprop="name">webpack</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          <br>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>通常我们的项目包含三种类型的代码：业务代码、第三方依赖库、webpack打包构建后的manifest。官网经常会看到mainfest这个词，但是它究竟指什么，我们来做个实验找答案吧：（ps：文章把manifest打成mainfest了）</p>
+</blockquote>
+<pre><code>1 mkdir  webpack_mainfest   //在当前目录下，创建项目目录 webpack_mainfest
+2 npm init
+3 npm install webpack
+2 cd  webpack_mainfest  // 进入项目目录
+3 touch main.js   // 创建入口文件
+5 touch wepack.config.js  //创建webpack 配置文件</code></pre><p>webpack.config.js</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">'path'</span>);</span><br><span class="line"></span><br><span class="line">  <span class="built_in">module</span>.exports = &#123;</span><br><span class="line">    entry: <span class="string">'./main.js'</span>,</span><br><span class="line">    output: &#123;</span><br><span class="line">     filename: <span class="string">'bundle.js'</span>,</span><br><span class="line">      path: path.resolve(__dirname, <span class="string">'dist'</span>)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p>main.js</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.info(<span class="string">'入口文件也是一个模块'</span>)</span><br></pre></td></tr></table></figure>
+
+<p>然后，我们就直接打包： webpack –config webpack.config.js</p>
+<p><img src="/images/7155532-15ee04aa5b6e6ad4.webp" alt="pic1"></p>
+<p>可以看出，打包是只是引入一个模块<br>我们看一下打包之后生成bundle.js的内容：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/******/</span> (<span class="function"><span class="keyword">function</span>(<span class="params">modules</span>) </span>&#123; <span class="comment">// webpackBootstrap</span></span><br><span class="line"><span class="comment">/******/</span>    <span class="comment">// The module cache</span></span><br><span class="line"><span class="comment">/******/</span>    <span class="keyword">var</span> installedModules = &#123;&#125;;</span><br><span class="line"><span class="comment">/******/</span></span><br><span class="line"><span class="comment">/******/</span>    <span class="comment">// The require function</span></span><br><span class="line"><span class="comment">/******/</span>    <span class="function"><span class="keyword">function</span> <span class="title">__webpack_require__</span>(<span class="params">moduleId</span>) </span>&#123;</span><br><span class="line"><span class="comment">/******/</span></span><br><span class="line"><span class="comment">/******/</span>        <span class="comment">// Check if module is in cache</span></span><br><span class="line"><span class="comment">/******/</span>        <span class="keyword">if</span>(installedModules[moduleId]) &#123;</span><br><span class="line"><span class="comment">/******/</span>            <span class="keyword">return</span> installedModules[moduleId].exports;</span><br><span class="line"><span class="comment">/******/</span>        &#125;</span><br><span class="line"><span class="comment">/******/</span>        <span class="comment">// Create a new module (and put it into the cache)</span></span><br><span class="line"><span class="comment">/******/</span>        <span class="keyword">var</span> <span class="built_in">module</span> = installedModules[moduleId] = &#123;</span><br><span class="line"><span class="comment">/******/</span>            i: moduleId,</span><br><span class="line"><span class="comment">/******/</span>            l: <span class="literal">false</span>,</span><br><span class="line"><span class="comment">/******/</span>            exports: &#123;&#125;</span><br><span class="line"><span class="comment">/******/</span>        &#125;;</span><br><span class="line"><span class="comment">/******/</span></span><br><span class="line"><span class="comment">/******/</span>        <span class="comment">// Execute the module function</span></span><br><span class="line"><span class="comment">/******/</span>        modules[moduleId].call(<span class="built_in">module</span>.exports, <span class="built_in">module</span>, <span class="built_in">module</span>.exports, __webpack_require__);</span><br><span class="line"><span class="comment">/******/</span></span><br><span class="line"><span class="comment">/******/</span>        <span class="comment">// Flag the module as loaded</span></span><br><span class="line"><span class="comment">/******/</span>        <span class="built_in">module</span>.l = <span class="literal">true</span>;</span><br><span class="line"><span class="comment">/******/</span></span><br><span class="line"><span class="comment">/******/</span>        <span class="comment">// Return the exports of the module</span></span><br><span class="line"><span class="comment">/******/</span>        <span class="keyword">return</span> <span class="built_in">module</span>.exports;</span><br><span class="line"><span class="comment">/******/</span>    &#125;</span><br><span class="line"><span class="comment">/******/</span></span><br><span class="line"><span class="comment">/******/</span></span><br><span class="line"><span class="comment">/******/</span>    <span class="comment">// expose the modules object (__webpack_modules__)</span></span><br><span class="line"><span class="comment">/******/</span>    __webpack_require__.m = modules;</span><br><span class="line"><span class="comment">/******/</span></span><br><span class="line"><span class="comment">/******/</span>    <span class="comment">// expose the module cache</span></span><br><span class="line"><span class="comment">/******/</span>    __webpack_require__.c = installedModules;</span><br><span class="line"><span class="comment">/******/</span></span><br><span class="line"><span class="comment">/******/</span>    <span class="comment">// define getter function for harmony exports</span></span><br><span class="line"><span class="comment">/******/</span>    __webpack_require__.d = <span class="function"><span class="keyword">function</span>(<span class="params">exports, name, getter</span>) </span>&#123;</span><br><span class="line"><span class="comment">/******/</span>        <span class="keyword">if</span>(!__webpack_require__.o(exports, name)) &#123;</span><br><span class="line"><span class="comment">/******/</span>            <span class="built_in">Object</span>.defineProperty(exports, name, &#123;</span><br><span class="line"><span class="comment">/******/</span>                configurable: <span class="literal">false</span>,</span><br><span class="line"><span class="comment">/******/</span>                enumerable: <span class="literal">true</span>,</span><br><span class="line"><span class="comment">/******/</span>                <span class="keyword">get</span>: getter</span><br><span class="line">/******/            &#125;);</span><br><span class="line">/******/        &#125;</span><br><span class="line">/******/    &#125;;</span><br><span class="line">/******/</span><br><span class="line">/******/    // getDefaultExport function for compatibility with non-harmony modules</span><br><span class="line">/******/    __webpack_require__.n = function(module) &#123;</span><br><span class="line"><span class="comment">/******/</span>        <span class="keyword">var</span> getter = <span class="built_in">module</span> &amp;&amp; <span class="built_in">module</span>.__esModule ?</span><br><span class="line"><span class="comment">/******/</span>            <span class="function"><span class="keyword">function</span> <span class="title">getDefault</span>(<span class="params"></span>) </span>&#123; <span class="keyword">return</span> <span class="built_in">module</span>[<span class="string">'default'</span>]; &#125; :</span><br><span class="line"><span class="comment">/******/</span>            <span class="function"><span class="keyword">function</span> <span class="title">getModuleExports</span>(<span class="params"></span>) </span>&#123; <span class="keyword">return</span> <span class="built_in">module</span>; &#125;;</span><br><span class="line"><span class="comment">/******/</span>        __webpack_require__.d(getter, <span class="string">'a'</span>, getter);</span><br><span class="line"><span class="comment">/******/</span>        <span class="keyword">return</span> getter;</span><br><span class="line"><span class="comment">/******/</span>    &#125;;</span><br><span class="line"><span class="comment">/******/</span></span><br><span class="line"><span class="comment">/******/</span>    <span class="comment">// Object.prototype.hasOwnProperty.call</span></span><br><span class="line"><span class="comment">/******/</span>    __webpack_require__.o = <span class="function"><span class="keyword">function</span>(<span class="params">object, property</span>) </span>&#123; <span class="keyword">return</span> <span class="built_in">Object</span>.prototype.hasOwnProperty.call(object, property); &#125;;</span><br><span class="line"><span class="comment">/******/</span></span><br><span class="line"><span class="comment">/******/</span>    <span class="comment">// __webpack_public_path__</span></span><br><span class="line"><span class="comment">/******/</span>    __webpack_require__.p = <span class="string">""</span>;</span><br><span class="line"><span class="comment">/******/</span></span><br><span class="line"><span class="comment">/******/</span>    <span class="comment">// Load entry module and return exports</span></span><br><span class="line"><span class="comment">/******/</span>    <span class="keyword">return</span> __webpack_require__(__webpack_require__.s = <span class="number">0</span>);</span><br><span class="line"><span class="comment">/******/</span> &#125;)</span><br><span class="line"><span class="comment">/************************************************************************/</span></span><br><span class="line"><span class="comment">/******/</span> ([</span><br><span class="line"><span class="comment">/* 0 */</span></span><br><span class="line"><span class="comment">/***/</span> (<span class="function"><span class="keyword">function</span>(<span class="params">module, exports</span>) </span>&#123;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.info(<span class="string">'入口文件也是一个模块'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">/***/</span> &#125;)</span><br><span class="line"><span class="comment">/******/</span> ]);</span><br></pre></td></tr></table></figure>
+
+<p>我们只是引入一个main.js模块，但是实际生成的bundle.js确实非常多。<br>前面的一大堆就是mainfest，准确来说是，runtime代码。官网的描述是这样的：</p>
+<p><img src="/images/7155532-22227abebcbe552a.webp" alt="pic2"></p>
+<blockquote>
+<p>其实这里，webpack帮我们定义了一个webpack_require的加载模块的方法，而mainfest模块数据集合就是对应着bundle.js第三行的 installedModules 。每当我们在main.js入口文件引入一模块，installModules就会发生变化，当我们页面点击跳转，加载对应模块就是通过<strong>webpack_require</strong>方法在installModules中找对应模块信息，进行加载。</p>
+</blockquote>
+<p>那这个跟缓存有什么关系呢？</p>
+<pre><code>1、我们知道浏览器加载js文件，如果文件名是一致的会优先从本地缓存拿，如果没有才向服务器这边请求。这个是时候，我们可以知道，如果是业务代码，比如我优化了一个功能，更改了个bug，如果文件名没有变化，请求时，浏览器用了缓存数据，则我们的新代码没被用上，因为浏览器用了旧代码文件。所以，output的选项中的filename，就不在是bundle.js ,而对应着bungdle[chunkhash].js，因为每次打包时，chunkhash都不同，所以打出来的文件名居不同，浏览器就不会直接用缓存数据了，而是请求新文件
+
+2、实际上，我们发现只有我们业务代码经常变化，而第三方依赖库是很少变化的，比如你使用了vue、vue-router、或者react等第三方库，这些是不会变化，那我们希望浏览器如果有的话，就不用再请求。但是，我们打包都整合到一个bundle[chunkhash].js上了，所以，我们需要借助webpack.optimize.CommonsChunkPlugin来帮我们分离代码，将mainfest、第三方库包，业务代码独立成三个文件</code></pre><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 抽出第三方库，命名vendor，不需要加chunkhash，因为他很少变化</span></span><br><span class="line"><span class="comment">// minChunk 判断哪些模块可以抽出来合并成ventor，这里只要是从node_module出来就抽</span></span><br><span class="line"><span class="comment">// 注意一定要放在mainfest的前面</span></span><br><span class="line"><span class="keyword">new</span> webpack.optimize.CommonsChunkPlugin(&#123;</span><br><span class="line">      name: <span class="string">'vendor'</span>,</span><br><span class="line">      minChunks: <span class="function"><span class="keyword">function</span> (<span class="params">module, count</span>) </span>&#123;</span><br><span class="line">        <span class="comment">// any required modules inside node_modules are extracted to vendor</span></span><br><span class="line">        <span class="keyword">return</span> (</span><br><span class="line">          <span class="built_in">module</span>.resource &amp;&amp;</span><br><span class="line">          /\.js$/.test(<span class="built_in">module</span>.resource) &amp;&amp;</span><br><span class="line">          <span class="built_in">module</span>.resource.indexOf(</span><br><span class="line">            path.join(__dirname, <span class="string">'../node_modules'</span>)</span><br><span class="line">          ) === <span class="number">0</span></span><br><span class="line">        )</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;),</span><br><span class="line"><span class="comment">// 抽出mainfest</span></span><br><span class="line"><span class="keyword">new</span> webpack.optimize.CommonsChunkPlugin(&#123;</span><br><span class="line">      name: <span class="string">'manifest'</span>,</span><br><span class="line">      chunks: [<span class="string">'vendor'</span>]</span><br><span class="line"> &#125;)</span><br></pre></td></tr></table></figure>
+
+<p> 而我们的业务代码是配置在output选项的，这样就会生成bundle[chunkhash].js 、vendor.js、mainfest.js,三个文件。<br>我们来试一下：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">npm install vue   <span class="comment">//第三方库</span></span><br><span class="line"><span class="comment">// 同时main.js，改成</span></span><br><span class="line"><span class="built_in">console</span>.info(<span class="string">'入口文件也是一个模块'</span>)</span><br><span class="line"><span class="keyword">var</span> vue = <span class="built_in">require</span>(<span class="string">'vue'</span>)</span><br></pre></td></tr></table></figure>
+
+<p>然后webpack.config.js 按上面加入两个插件</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">'path'</span>);</span><br><span class="line">  <span class="keyword">const</span> webpack = <span class="built_in">require</span>(<span class="string">'webpack'</span>);</span><br><span class="line"></span><br><span class="line">  <span class="built_in">module</span>.exports = &#123;</span><br><span class="line">    entry: <span class="string">'./main.js'</span>,</span><br><span class="line">    output: &#123;</span><br><span class="line">     filename: <span class="string">'bundle[chunkhash].js'</span>,</span><br><span class="line">      path: path.resolve(__dirname, <span class="string">'dist'</span>)</span><br><span class="line">    &#125;,</span><br><span class="line">    resolve: &#123;</span><br><span class="line">        alias: &#123;</span><br><span class="line">          <span class="string">'vue$'</span>: <span class="string">'vue/dist/vue.esm.js'</span>,</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">    plugins: [</span><br><span class="line">        <span class="comment">// 抽出第三方库，命名vendor，不需要加chunkhash，因为他很少变化</span></span><br><span class="line">        <span class="comment">// minChunk 判断哪些模块可以抽出来合并成ventor，这里只要是从node_module出来就抽</span></span><br><span class="line">        <span class="comment">// 注意一定要放在mainfest的前面</span></span><br><span class="line">        <span class="keyword">new</span> webpack.optimize.CommonsChunkPlugin(&#123;</span><br><span class="line">              name: <span class="string">'vendor'</span>,</span><br><span class="line">              filename: <span class="string">"vendor.js"</span>,</span><br><span class="line">              minChunks: <span class="function"><span class="keyword">function</span> (<span class="params">module, count</span>) </span>&#123;</span><br><span class="line">                <span class="comment">// any required modules inside node_modules are extracted to vendor</span></span><br><span class="line">                <span class="keyword">return</span> (</span><br><span class="line">                  <span class="built_in">module</span>.resource &amp;&amp;</span><br><span class="line">                  /\.js$/.test(<span class="built_in">module</span>.resource) &amp;&amp;</span><br><span class="line">                  <span class="built_in">module</span>.resource.indexOf(</span><br><span class="line">                    path.join(__dirname, <span class="string">'/node_modules'</span>)</span><br><span class="line">                  ) === <span class="number">0</span></span><br><span class="line">                )</span><br><span class="line">              &#125;</span><br><span class="line">            &#125;),</span><br><span class="line">        <span class="comment">// 抽出mainfest</span></span><br><span class="line">        <span class="keyword">new</span> webpack.optimize.CommonsChunkPlugin(&#123;</span><br><span class="line">              name: <span class="string">'manifest'</span>,</span><br><span class="line">              filename: <span class="string">'manifest.js'</span></span><br><span class="line">         &#125;)</span><br><span class="line">    ]</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p>执行 webpack –config webpack.congfig.js, 生成三个对应文件。这样来说，ventor一样的，然后浏览如果是第二次请求，会走缓存路线，不必再次加载。而bundle[chunkhash].js也就是我们的业务代码，可以避免缓存的影响</p>
+<p><img src="/images/7155532-c0fbf87fba32551c.webp" alt="pic3"></p>
+<p>实际上，mainfest也会发生变化，它的变化在于你是否增加了模块，比如新引入一个js文件之类，mainfest也会变化。明白了mainfest，我们就可以更好的处理我们的缓存机制了.</p>
+
+    </div>
+
+    
+    
+    
+    
+      <div>
+        <div id="reward-container">
+  <div></div>
+  <button id="reward-button" disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+        
+      
+      <div style="display: inline-block">
+        <img src="/images/alipay.jpeg" alt="gcl chang 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+      </div>
+
+    <footer class="post-footer">
+          
+        
+        <div class="post-tags">
+            <a href="/tags/打包/" rel="tag"><i class="fa fa-tag"></i> 打包</a>
+          
+            <a href="/tags/构建/" rel="tag"><i class="fa fa-tag"></i> 构建</a>
+          
+        </div>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+              <a href="/2018/08/11/webpack搭配babel-polyfill编译es6新api/" rel="next" title="webpack搭配babel-polyfill编译es6新api">
+                <i class="fa fa-chevron-left"></i> webpack搭配babel-polyfill编译es6新api
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+              <a href="/2018/08/11/webpack搭配babel-runtime-transform编译es6新api/" rel="prev" title="webpack搭配babel-runtime-transform编译es6新api">
+                webpack搭配babel-runtime-transform编译es6新api <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/avatar.gif"
+      alt="gcl chang">
+  <p class="site-author-name" itemprop="name">gcl chang</p>
+  <div class="site-description motion-element" itemprop="description"></div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives">
+        
+          <span class="site-state-item-count">16</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="chat motion-element"><i class="fa fa-comment"></i>
+    Chat
+  </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/gcloud20150522" title="GitHub &rarr; https://github.com/gcloud20150522" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="/gdmcwb@gmail.com" title="E-Mail &rarr; gdmcwb@gmail.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://weibo.com/yourname" title="Weibo &rarr; https://weibo.com/yourname" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://www.facebook.com/yourname" title="FB Page &rarr; https://www.facebook.com/yourname" rel="noopener" target="_blank"><i class="fa fa-fw fa-facebook"></i>FB Page</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://instagram.com/yourname" title="Instagram &rarr; https://instagram.com/yourname" rel="noopener" target="_blank"><i class="fa fa-fw fa-instagram"></i>Instagram</a>
+      </span>
+    
+  </div>
+
+
+
+        </div>
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2015 – <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">gcl chang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.3.0</div>
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+  </div>
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/reading_progress/reading_progress.js"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  <script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+  
+  <script src="/js/schemes/muse.js?v=7.3.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.3.0"></script>
+
+  
+  <script src="/js/js.cookie.js?v=7.3.0"></script>
+  <script src="/js/scroll-cookie.js?v=7.3.0"></script>
+
+  
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="/lib/bookmark/bookmark.min.js?v=1.0"></script>
+  <script>
+    bookmark.scrollToMark('auto', "#更多");
+  
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

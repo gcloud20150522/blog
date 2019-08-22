@@ -4,7 +4,7 @@
 
 
 
-<html class="theme-next muse use-motion" lang="">
+<html class="theme-next mist use-motion" lang="zh-CN">
 <head>
   <meta charset="UTF-8">
 <meta name="generator" content="Hexo 3.9.0">
@@ -26,11 +26,11 @@
   var NexT = window.NexT || {};
   var CONFIG = {
     root: '/',
-    scheme: 'Muse',
+    scheme: 'Mist',
     version: '7.3.0',
-    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
-    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
-    copycode: {"enable":false,"show_result":false,"style":null},
+    sidebar: {"position":"left","display":"hide","offset":12,"onmobile":true},
+    back2top: {"enable":true,"sidebar":true,"scrollpercent":true},
+    copycode: {"enable":true,"show_result":true,"style":"mac"},
     fancybox: false,
     mediumzoom: false,
     lazyload: false,
@@ -50,22 +50,22 @@
     tabs: true,
     motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
     translation: {
-      copy_button: 'Copy',
-      copy_success: 'Copied',
-      copy_failure: 'Copy failed'
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
     }
   };
 </script>
 
   <meta name="description" content="双向数据绑定的4种实现方式。1.手动触发绑定手动触发绑定的主要思路是通过在数据对象定义 get 和 set 方法(可以使用其他的命名方法)，调用时手动去触发 get 和 set 方法去获取数据，修改数据，改变数据后会主动去触发 get 和 set 函数中视图层的重新渲染。 简单的手动触发绑定代码如下： 123456789101112131415161718192021222324252627282">
-<meta name="keywords" content="js vue">
+<meta name="keywords" content="js,vue">
 <meta property="og:type" content="article">
 <meta property="og:title" content="四种方法实现数据双向绑定">
 <meta property="og:url" content="http://yoursite.com/2017/07/31/数据绑定/index.html">
 <meta property="og:site_name" content="Gcloud">
 <meta property="og:description" content="双向数据绑定的4种实现方式。1.手动触发绑定手动触发绑定的主要思路是通过在数据对象定义 get 和 set 方法(可以使用其他的命名方法)，调用时手动去触发 get 和 set 方法去获取数据，修改数据，改变数据后会主动去触发 get 和 set 函数中视图层的重新渲染。 简单的手动触发绑定代码如下： 123456789101112131415161718192021222324252627282">
-<meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-08-01T13:06:11.243Z">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-08-19T16:58:53.223Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="四种方法实现数据双向绑定">
 <meta name="twitter:description" content="双向数据绑定的4种实现方式。1.手动触发绑定手动触发绑定的主要思路是通过在数据对象定义 get 和 set 方法(可以使用其他的命名方法)，调用时手动去触发 get 和 set 方法去获取数据，修改数据，改变数据后会主动去触发 get 和 set 函数中视图层的重新渲染。 简单的手动触发绑定代码如下： 123456789101112131415161718192021222324252627282">
@@ -115,7 +115,7 @@
 
 </head>
 
-<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
 
   <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
@@ -134,7 +134,7 @@
   </div>
 
   <div class="site-nav-toggle">
-    <button aria-label="Toggle navigation bar">
+    <button aria-label="切换导航栏">
       <span class="btn-bar"></span>
       <span class="btn-bar"></span>
       <span class="btn-bar"></span>
@@ -150,22 +150,55 @@
         
         
           
-          <li class="menu-item menu-item-home">
+          <li class="menu-item menu-item-首页">
       
     
 
-    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
 
   </li>
         
         
         
           
-          <li class="menu-item menu-item-archives">
+          <li class="menu-item menu-item-关于">
       
     
 
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-标签">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-分类">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-归档">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
 
   </li>
     </ul>
@@ -187,6 +220,7 @@
 
   <div id="posts" class="posts-expand">
     
+    <div class="reading-progress-bar"></div>
 
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
   
@@ -220,36 +254,22 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">发表于</span>
               
 
               
                 
               
 
-              <time title="Created: 2017-07-31 23:54:51" itemprop="dateCreated datePublished" datetime="2017-07-31T23:54:51+00:00">2017-07-31</time>
+              <time title="创建时间：2017-07-31 23:54:51" itemprop="dateCreated datePublished" datetime="2017-07-31T23:54:51+00:00">2017-07-31</time>
             </span>
-          
-            
-
-            
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Edited on</span>
-                
-                <time title="Modified: 2019-08-01 13:06:11" itemprop="dateModified" datetime="2019-08-01T13:06:11+00:00">2019-08-01</time>
-              </span>
-            
           
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">分类于</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/javascript/" itemprop="url" rel="index"><span itemprop="name">javascript</span></a></span>
@@ -273,7 +293,7 @@
       
         <h2 id="双向数据绑定的4种实现方式。"><a href="#双向数据绑定的4种实现方式。" class="headerlink" title="双向数据绑定的4种实现方式。"></a>双向数据绑定的4种实现方式。</h2><h3 id="1-手动触发绑定"><a href="#1-手动触发绑定" class="headerlink" title="1.手动触发绑定"></a>1.手动触发绑定</h3><p>手动触发绑定的主要思路是通过在数据对象定义 get 和 set 方法(可以使用其他的命名方法)，调用时手动去触发 get 和 set 方法去获取数据，修改数据，改变数据后会主动去触发 get 和 set 函数中视图层的重新渲染。</p>
 <p>简单的手动触发绑定代码如下：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=<span class="string">"en"</span>&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;meta charset=<span class="string">"UTF-8"</span>&gt;</span><br><span class="line">    &lt;meta name=<span class="string">"viewport"</span> content=<span class="string">"width=device-width, initial-scale=1.0"</span>&gt;</span><br><span class="line">    &lt;meta http-equiv=<span class="string">"X-UA-Compatible"</span> content=<span class="string">"ie=edge"</span>&gt;</span><br><span class="line">    &lt;title&gt;手动双向绑定&lt;<span class="regexp">/title&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">    &lt;input type=<span class="string">"text"</span> id=<span class="string">"input"</span> s-value=<span class="string">"value"</span>&gt;</span><br><span class="line">    &lt;span id=<span class="string">"el"</span> s-text=<span class="string">"value"</span>&gt;&lt;/span&gt;</span><br><span class="line">    &lt;script&gt;</span><br><span class="line">        <span class="keyword">let</span> elems = [<span class="built_in">document</span>.getElementById(<span class="string">'el'</span>), <span class="built_in">document</span>.getElementById(<span class="string">'input'</span>)];</span><br><span class="line">        <span class="keyword">let</span> data = &#123;</span><br><span class="line">            value: <span class="string">''</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">let</span> directive = &#123;</span><br><span class="line">            text: <span class="function"><span class="keyword">function</span> (<span class="params">text</span>) </span>&#123;</span><br><span class="line">                <span class="keyword">this</span>.innerHTML = text</span><br><span class="line">            &#125;,</span><br><span class="line">            value: <span class="function"><span class="keyword">function</span> (<span class="params">value</span>) </span>&#123;</span><br><span class="line">                <span class="keyword">this</span>.setAttribute(<span class="string">'value'</span>, value)</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 监听 input 的 keyup 事件</span></span><br><span class="line">        elems[<span class="number">1</span>].addEventListener(<span class="string">'keyup'</span>, <span class="function"><span class="keyword">function</span> (<span class="params">e</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">set</span>('value', e.target.value)</span><br><span class="line">        &#125;)</span><br><span class="line">        </span><br><span class="line">        function scan() &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">let</span> elem <span class="keyword">of</span> elems) &#123;</span><br><span class="line">                <span class="keyword">for</span> (<span class="keyword">let</span> attr <span class="keyword">of</span> elem.attributes) &#123;</span><br><span class="line">                    <span class="keyword">if</span> (attr.nodeName.indexOf(<span class="string">'s-'</span>) !== <span class="number">-1</span>) &#123;</span><br><span class="line">                        <span class="comment">// 调用属性指令</span></span><br><span class="line">                        directive[attr.nodeName.slice(<span class="number">2</span>)].call(elem, data[attr.nodeValue])</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="function"><span class="keyword">function</span> <span class="title">set</span>(<span class="params">key, value</span>) </span>&#123;</span><br><span class="line">            data[key] = value;</span><br><span class="line">            scan();</span><br><span class="line">        &#125;</span><br><span class="line">    &lt;<span class="regexp">/script&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>body&gt;</span><br><span class="line">&lt;<span class="regexp">/html&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=<span class="string">"en"</span>&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;meta charset=<span class="string">"UTF-8"</span>&gt;</span><br><span class="line">    &lt;meta name=<span class="string">"viewport"</span> content=<span class="string">"width=device-width, initial-scale=1.0"</span>&gt;</span><br><span class="line">    &lt;meta http-equiv=<span class="string">"X-UA-Compatible"</span> content=<span class="string">"ie=edge"</span>&gt;</span><br><span class="line">    &lt;title&gt;手动双向绑定&lt;<span class="regexp">/title&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">    &lt;input type=<span class="string">"text"</span> id=<span class="string">"input"</span> s-value=<span class="string">"value"</span>&gt;</span><br><span class="line">    &lt;span id=<span class="string">"el"</span> s-text=<span class="string">"value"</span>&gt;<span class="xml"><span class="tag">&lt;/<span class="name">span</span>&gt;</span></span></span><br><span class="line">    &lt;script&gt;</span><br><span class="line">        <span class="keyword">let</span> elems = [<span class="built_in">document</span>.getElementById(<span class="string">'el'</span>), <span class="built_in">document</span>.getElementById(<span class="string">'input'</span>)];</span><br><span class="line">        <span class="keyword">let</span> data = &#123;</span><br><span class="line">            value: <span class="string">''</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">let</span> directive = &#123;</span><br><span class="line">            text: <span class="function"><span class="keyword">function</span> (<span class="params">text</span>) </span>&#123;</span><br><span class="line">                <span class="keyword">this</span>.innerHTML = text</span><br><span class="line">            &#125;,</span><br><span class="line">            value: <span class="function"><span class="keyword">function</span> (<span class="params">value</span>) </span>&#123;</span><br><span class="line">                <span class="keyword">this</span>.setAttribute(<span class="string">'value'</span>, value)</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 监听 input 的 keyup 事件</span></span><br><span class="line">        elems[<span class="number">1</span>].addEventListener(<span class="string">'keyup'</span>, <span class="function"><span class="keyword">function</span> (<span class="params">e</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">set</span>('value', e.target.value)</span><br><span class="line">        &#125;)</span><br><span class="line">        </span><br><span class="line">        function scan() &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">let</span> elem <span class="keyword">of</span> elems) &#123;</span><br><span class="line">                <span class="keyword">for</span> (<span class="keyword">let</span> attr <span class="keyword">of</span> elem.attributes) &#123;</span><br><span class="line">                    <span class="keyword">if</span> (attr.nodeName.indexOf(<span class="string">'s-'</span>) !== <span class="number">-1</span>) &#123;</span><br><span class="line">                        <span class="comment">// 调用属性指令</span></span><br><span class="line">                        directive[attr.nodeName.slice(<span class="number">2</span>)].call(elem, data[attr.nodeValue])</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="function"><span class="keyword">function</span> <span class="title">set</span>(<span class="params">key, value</span>) </span>&#123;</span><br><span class="line">            data[key] = value;</span><br><span class="line">            scan();</span><br><span class="line">        &#125;</span><br><span class="line">    &lt;<span class="regexp">/script&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>body&gt;</span><br><span class="line">&lt;<span class="regexp">/html&gt;</span></span><br></pre></td></tr></table></figure>
 
 <h3 id="2-数据劫持"><a href="#2-数据劫持" class="headerlink" title="2.数据劫持"></a>2.数据劫持</h3><p>数据劫持的基本思路是使用 Object.defineProperty 对 ViewModel 数据对象进行 get 和 set 的监听，当有数据变动的时候扫描元素节点，然后去运行对应节点上的指令（directive）。</p>
 <p>代码如下：</p>
@@ -291,18 +311,39 @@
     
     
     
+    
+      <div>
+        <div id="reward-container">
+  <div></div>
+  <button id="reward-button" disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+        
+      
+      <div style="display: inline-block">
+        <img src="/images/alipay.jpeg" alt="gcl chang 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+      </div>
 
     <footer class="post-footer">
           
         
         <div class="post-tags">
-            <a href="/tags/js-vue/" rel="tag"># js vue</a>
+            <a href="/tags/js/" rel="tag"><i class="fa fa-tag"></i> js</a>
+          
+            <a href="/tags/vue/" rel="tag"><i class="fa fa-tag"></i> vue</a>
           
         </div>
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
-              <a href="/2016/05/01/js深拷贝和浅拷贝/" rel="next" title="js深拷贝和浅拷贝">
-                <i class="fa fa-chevron-left"></i> js深拷贝和浅拷贝
+              <a href="/2016/11/12/多行文本的垂直居中/" rel="next" title="多行文本的垂直居中">
+                <i class="fa fa-chevron-left"></i> 多行文本的垂直居中
               </a>
             
           </div>
@@ -310,6 +351,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+              <a href="/2017/12/01/多Git账户生成多个id_rsa私钥保存路径冲突问题解决办法/" rel="prev" title="多Git账户生成多个id_rsa私钥保存路径冲突问题解决办法">
+                多Git账户生成多个id_rsa私钥保存路径冲突问题解决办法 <i class="fa fa-chevron-right"></i>
+              </a>
+            
           </div>
         </div>
     </footer>
@@ -341,10 +386,10 @@
     <div class="sidebar-inner">
         <ul class="sidebar-nav motion-element">
           <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            Table of Contents
+            文章目录
           </li>
           <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            Overview
+            站点概览
           </li>
         </ul>
       
@@ -353,16 +398,19 @@
         <div class="site-overview">
 
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/avatar.gif"
+      alt="gcl chang">
   <p class="site-author-name" itemprop="name">gcl chang</p>
   <div class="site-description motion-element" itemprop="description"></div>
 </div>
   <nav class="site-state motion-element">
       <div class="site-state-item site-state-posts">
         
-          <a href="/archives/">
+          <a href="/archives">
         
-          <span class="site-state-item-count">2</span>
-          <span class="site-state-item-name">posts</span>
+          <span class="site-state-item-count">16</span>
+          <span class="site-state-item-name">日志</span>
         </a>
       </div>
     
@@ -370,33 +418,146 @@
       
       <div class="site-state-item site-state-categories">
         
+          
+            <a href="/categories/">
+          
+        
         
         
           
         
           
         
-        <span class="site-state-item-count">2</span>
-        <span class="site-state-item-name">categories</span>
+          
         
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
       </div>
     
       
       
       <div class="site-state-item site-state-tags">
         
+          
+            <a href="/tags/">
+          
+        
         
         
           
         
           
         
-        <span class="site-state-item-count">2</span>
-        <span class="site-state-item-name">tags</span>
+          
         
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
       </div>
     
   </nav>
+  <div class="chat motion-element"><i class="fa fa-comment"></i>
+    Chat
+  </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/gcloud20150522" title="GitHub &rarr; https://github.com/gcloud20150522" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="/gdmcwb@gmail.com" title="E-Mail &rarr; gdmcwb@gmail.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://weibo.com/yourname" title="Weibo &rarr; https://weibo.com/yourname" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://www.facebook.com/yourname" title="FB Page &rarr; https://www.facebook.com/yourname" rel="noopener" target="_blank"><i class="fa fa-fw fa-facebook"></i>FB Page</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://instagram.com/yourname" title="Instagram &rarr; https://instagram.com/yourname" rel="noopener" target="_blank"><i class="fa fa-fw fa-instagram"></i>Instagram</a>
+      </span>
+    
+  </div>
 
 
 
@@ -419,6 +580,13 @@
         </div>
       <!--/noindex-->
       
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
 
     </div>
   </aside>
@@ -430,15 +598,15 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+        <div class="copyright">&copy; 2015 – <span itemprop="copyrightYear">2019</span>
   <span class="with-love" id="animate">
     <i class="fa fa-user"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">gcl chang</span>
 </div>
-  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
   <span class="post-meta-divider">|</span>
-  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.3.0</div>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.3.0</div>
 
         
 
@@ -452,9 +620,6 @@
         
       </div>
     </footer>
-      <div class="back-to-top">
-        <i class="fa fa-arrow-up"></i>
-      </div>
 
     
 
@@ -462,6 +627,7 @@
 
   
   <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/reading_progress/reading_progress.js"></script>
   <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
   <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
 
@@ -470,6 +636,7 @@
 
   
   <script src="/js/schemes/muse.js?v=7.3.0"></script>
+
 
 
   
@@ -481,6 +648,8 @@
   <script src="/js/next-boot.js?v=7.3.0"></script>
 
   
+  <script src="/js/js.cookie.js?v=7.3.0"></script>
+  <script src="/js/scroll-cookie.js?v=7.3.0"></script>
 
   
 
@@ -496,6 +665,11 @@
 
 
 
+  <script src="/lib/bookmark/bookmark.min.js?v=1.0"></script>
+  <script>
+    bookmark.scrollToMark('auto', "#更多");
+  
+  </script>
 
 
 

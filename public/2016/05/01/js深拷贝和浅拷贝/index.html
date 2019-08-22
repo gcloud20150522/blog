@@ -4,7 +4,7 @@
 
 
 
-<html class="theme-next muse use-motion" lang="">
+<html class="theme-next mist use-motion" lang="zh-CN">
 <head>
   <meta charset="UTF-8">
 <meta name="generator" content="Hexo 3.9.0">
@@ -26,11 +26,11 @@
   var NexT = window.NexT || {};
   var CONFIG = {
     root: '/',
-    scheme: 'Muse',
+    scheme: 'Mist',
     version: '7.3.0',
-    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
-    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
-    copycode: {"enable":false,"show_result":false,"style":null},
+    sidebar: {"position":"left","display":"hide","offset":12,"onmobile":true},
+    back2top: {"enable":true,"sidebar":true,"scrollpercent":true},
+    copycode: {"enable":true,"show_result":true,"style":"mac"},
     fancybox: false,
     mediumzoom: false,
     lazyload: false,
@@ -50,9 +50,9 @@
     tabs: true,
     motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
     translation: {
-      copy_button: 'Copy',
-      copy_success: 'Copied',
-      copy_failure: 'Copy failed'
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
     }
   };
 </script>
@@ -64,8 +64,8 @@
 <meta property="og:url" content="http://yoursite.com/2016/05/01/js深拷贝和浅拷贝/index.html">
 <meta property="og:site_name" content="Gcloud">
 <meta property="og:description" content="一、数组的深浅拷贝 在使用JavaScript对数组进行操作的时候，我们经常需要将数组进行备份，事实证明如果只是简单的将它赋予其他变量，那么我们只要更改其中的任何一个，然后其他的也会跟着改变，这就导致了问题的发生。  var arr = [&amp;quot;One&amp;quot;,&amp;quot;Two&amp;quot;,&amp;quot;Three&amp;quot;]; var arrto = arr; arrto[1] =">
-<meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-08-01T13:36:30.740Z">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-08-19T16:58:53.223Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="js深拷贝和浅拷贝">
 <meta name="twitter:description" content="一、数组的深浅拷贝 在使用JavaScript对数组进行操作的时候，我们经常需要将数组进行备份，事实证明如果只是简单的将它赋予其他变量，那么我们只要更改其中的任何一个，然后其他的也会跟着改变，这就导致了问题的发生。  var arr = [&amp;quot;One&amp;quot;,&amp;quot;Two&amp;quot;,&amp;quot;Three&amp;quot;]; var arrto = arr; arrto[1] =">
@@ -115,7 +115,7 @@
 
 </head>
 
-<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
 
   <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
@@ -134,7 +134,7 @@
   </div>
 
   <div class="site-nav-toggle">
-    <button aria-label="Toggle navigation bar">
+    <button aria-label="切换导航栏">
       <span class="btn-bar"></span>
       <span class="btn-bar"></span>
       <span class="btn-bar"></span>
@@ -150,22 +150,55 @@
         
         
           
-          <li class="menu-item menu-item-home">
+          <li class="menu-item menu-item-首页">
       
     
 
-    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
 
   </li>
         
         
         
           
-          <li class="menu-item menu-item-archives">
+          <li class="menu-item menu-item-关于">
       
     
 
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-标签">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-分类">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-归档">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
 
   </li>
     </ul>
@@ -187,6 +220,7 @@
 
   <div id="posts" class="posts-expand">
     
+    <div class="reading-progress-bar"></div>
 
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
   
@@ -220,39 +254,25 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">发表于</span>
               
 
               
                 
               
 
-              <time title="Created: 2016-05-01 23:54:51" itemprop="dateCreated datePublished" datetime="2016-05-01T23:54:51+00:00">2016-05-01</time>
+              <time title="创建时间：2016-05-01 23:54:51" itemprop="dateCreated datePublished" datetime="2016-05-01T23:54:51+00:00">2016-05-01</time>
             </span>
-          
-            
-
-            
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Edited on</span>
-                
-                <time title="Modified: 2019-08-01 13:36:30" itemprop="dateModified" datetime="2019-08-01T13:36:30+00:00">2019-08-01</time>
-              </span>
-            
           
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/前端/" itemprop="url" rel="index"><span itemprop="name">前端</span></a></span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/javascript/" itemprop="url" rel="index"><span itemprop="name">javascript</span></a></span>
 
                 
                 
@@ -312,12 +332,31 @@ console.log(a);//Object { name=&quot;xx&quot;, age=26}</code></pre><p>就是把�
     
     
     
+    
+      <div>
+        <div id="reward-container">
+  <div></div>
+  <button id="reward-button" disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+        
+      
+      <div style="display: inline-block">
+        <img src="/images/alipay.jpeg" alt="gcl chang 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+      </div>
 
     <footer class="post-footer">
           
         
         <div class="post-tags">
-            <a href="/tags/js/" rel="tag"># js</a>
+            <a href="/tags/js/" rel="tag"><i class="fa fa-tag"></i> js</a>
           
         </div>
         <div class="post-nav">
@@ -327,8 +366,8 @@ console.log(a);//Object { name=&quot;xx&quot;, age=26}</code></pre><p>就是把�
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-              <a href="/2017/07/31/数据绑定/" rel="prev" title="四种方法实现数据双向绑定">
-                四种方法实现数据双向绑定 <i class="fa fa-chevron-right"></i>
+              <a href="/2016/10/11/css sticky footer/" rel="prev" title="css sticky footer的实现">
+                css sticky footer的实现 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -362,10 +401,10 @@ console.log(a);//Object { name=&quot;xx&quot;, age=26}</code></pre><p>就是把�
     <div class="sidebar-inner">
         <ul class="sidebar-nav motion-element">
           <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            Table of Contents
+            文章目录
           </li>
           <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            Overview
+            站点概览
           </li>
         </ul>
       
@@ -374,16 +413,19 @@ console.log(a);//Object { name=&quot;xx&quot;, age=26}</code></pre><p>就是把�
         <div class="site-overview">
 
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/avatar.gif"
+      alt="gcl chang">
   <p class="site-author-name" itemprop="name">gcl chang</p>
   <div class="site-description motion-element" itemprop="description"></div>
 </div>
   <nav class="site-state motion-element">
       <div class="site-state-item site-state-posts">
         
-          <a href="/archives/">
+          <a href="/archives">
         
-          <span class="site-state-item-count">2</span>
-          <span class="site-state-item-name">posts</span>
+          <span class="site-state-item-count">16</span>
+          <span class="site-state-item-name">日志</span>
         </a>
       </div>
     
@@ -391,33 +433,146 @@ console.log(a);//Object { name=&quot;xx&quot;, age=26}</code></pre><p>就是把�
       
       <div class="site-state-item site-state-categories">
         
+          
+            <a href="/categories/">
+          
+        
         
         
           
         
           
         
-        <span class="site-state-item-count">2</span>
-        <span class="site-state-item-name">categories</span>
+          
         
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
       </div>
     
       
       
       <div class="site-state-item site-state-tags">
         
+          
+            <a href="/tags/">
+          
+        
         
         
           
         
           
         
-        <span class="site-state-item-count">2</span>
-        <span class="site-state-item-name">tags</span>
+          
         
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
       </div>
     
   </nav>
+  <div class="chat motion-element"><i class="fa fa-comment"></i>
+    Chat
+  </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/gcloud20150522" title="GitHub &rarr; https://github.com/gcloud20150522" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="/gdmcwb@gmail.com" title="E-Mail &rarr; gdmcwb@gmail.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://weibo.com/yourname" title="Weibo &rarr; https://weibo.com/yourname" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://www.facebook.com/yourname" title="FB Page &rarr; https://www.facebook.com/yourname" rel="noopener" target="_blank"><i class="fa fa-fw fa-facebook"></i>FB Page</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://instagram.com/yourname" title="Instagram &rarr; https://instagram.com/yourname" rel="noopener" target="_blank"><i class="fa fa-fw fa-instagram"></i>Instagram</a>
+      </span>
+    
+  </div>
 
 
 
@@ -440,6 +595,13 @@ console.log(a);//Object { name=&quot;xx&quot;, age=26}</code></pre><p>就是把�
         </div>
       <!--/noindex-->
       
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
 
     </div>
   </aside>
@@ -451,15 +613,15 @@ console.log(a);//Object { name=&quot;xx&quot;, age=26}</code></pre><p>就是把�
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+        <div class="copyright">&copy; 2015 – <span itemprop="copyrightYear">2019</span>
   <span class="with-love" id="animate">
     <i class="fa fa-user"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">gcl chang</span>
 </div>
-  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
   <span class="post-meta-divider">|</span>
-  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.3.0</div>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.3.0</div>
 
         
 
@@ -473,9 +635,6 @@ console.log(a);//Object { name=&quot;xx&quot;, age=26}</code></pre><p>就是把�
         
       </div>
     </footer>
-      <div class="back-to-top">
-        <i class="fa fa-arrow-up"></i>
-      </div>
 
     
 
@@ -483,6 +642,7 @@ console.log(a);//Object { name=&quot;xx&quot;, age=26}</code></pre><p>就是把�
 
   
   <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/reading_progress/reading_progress.js"></script>
   <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
   <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
 
@@ -491,6 +651,7 @@ console.log(a);//Object { name=&quot;xx&quot;, age=26}</code></pre><p>就是把�
 
   
   <script src="/js/schemes/muse.js?v=7.3.0"></script>
+
 
 
   
@@ -502,6 +663,8 @@ console.log(a);//Object { name=&quot;xx&quot;, age=26}</code></pre><p>就是把�
   <script src="/js/next-boot.js?v=7.3.0"></script>
 
   
+  <script src="/js/js.cookie.js?v=7.3.0"></script>
+  <script src="/js/scroll-cookie.js?v=7.3.0"></script>
 
   
 
@@ -517,6 +680,11 @@ console.log(a);//Object { name=&quot;xx&quot;, age=26}</code></pre><p>就是把�
 
 
 
+  <script src="/lib/bookmark/bookmark.min.js?v=1.0"></script>
+  <script>
+    bookmark.scrollToMark('auto', "#更多");
+  
+  </script>
 
 
 
