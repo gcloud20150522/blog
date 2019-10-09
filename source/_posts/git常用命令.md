@@ -19,7 +19,7 @@ categories: 版本控制
 
 ### create branch
 - git checkout -b featureOne
-- git push —set-upstream origin - - - featureOne
+- git push —set-upstream origin  featureOne
 - git add .
 - git commit -m ‘msg'
 - git pull
